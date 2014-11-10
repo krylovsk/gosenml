@@ -18,9 +18,9 @@ type Message struct {
 type Entry struct {
 	Name         string  `json:"n,omitempty"`
 	Units        string  `json:"u,omitempty"`
-	Value        float64 `json:"v,omitempty"`
-	StringValue  string  `json:"sv,omitempty"`
-	BooleanValue bool    `json:"bv,omitempty"`
+	Value        float64 `json:"v"`
+	StringValue  string  `json:"sv"`
+	BooleanValue bool    `json:"bv"`
 	Sum          float64 `json:"s,omitempty"`
 	Time         int64   `json:"t,omitempty"`
 	UpdateTime   int64   `json:"ut,omitempty"`
