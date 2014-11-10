@@ -7,23 +7,23 @@ import "fmt"
 
 // Root variable
 type Message struct {
-	BaseName  string  `json:"bn"`
-	BaseTime  int64   `json:"bt"`
-	BaseUnits string  `json:"bu"`
+	BaseName  string  `json:"bn,omitempty"`
+	BaseTime  int64   `json:"bt,omitempty"`
+	BaseUnits string  `json:"bu,omitempty"`
 	Version   int     `json:"ver"`
 	Entries   []Entry `json:"e"`
 }
 
 // Measurement of Parameter Entry
 type Entry struct {
-	Name         string  `json:"n"`
-	Units        string  `json:"u"`
-	Value        float64 `json:"v"`
-	StringValue  string  `json:"sv"`
-	BooleanValue bool    `json:"bv"`
-	Sum          float64 `json:"s"`
-	Time         int64   `json:"t"`
-	UpdateTime   int64   `json:"ut"`
+	Name         string  `json:"n,omitempty"`
+	Units        string  `json:"u,omitempty"`
+	Value        float64 `json:"v,omitempty"`
+	StringValue  string  `json:"sv,omitempty"`
+	BooleanValue bool    `json:"bv,omitempty"`
+	Sum          float64 `json:"s,omitempty"`
+	Time         int64   `json:"t,omitempty"`
+	UpdateTime   int64   `json:"ut,omitempty"`
 }
 
 func NewMessage(entries ...Entry) *Message {
