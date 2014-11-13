@@ -1,6 +1,6 @@
 # GoSenML
 
-Go (golang) library for [SenML](http://www.ietf.org/archive/id/draft-jennings-senml-10.txt)
+Go (golang) library for [SenML](http://www.ietf.org/id/draft-jennings-core-senml-00.txt)
 
 # TODO
 - [ ] XML encoder
