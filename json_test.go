@@ -1,8 +1,6 @@
 package gosenml
 
-import (
-	"testing"
-)
+import "testing"
 
 var singleDatapoint = string(`{"e":[{ "n": "urn:dev:ow:10e2073a01080063", "v":23.5 }]}`)
 
@@ -67,9 +65,9 @@ var testSuiteInvalid = []string{
 }
 
 func TestDecodeValid(t *testing.T) {
-	processor := new(JsonEncoder)
+	decoder := NewJSONDecoder()
 	for _, d := range testSuiteValid {
-		_, err := processor.DecodeMessage([]byte(d))
+		_, err := decoder.DecodeMessage([]byte(d))
 		if err != nil {
 			t.Errorf("%v", err)
 		}
@@ -77,9 +75,9 @@ func TestDecodeValid(t *testing.T) {
 }
 
 func TestDecodeInvalid(t *testing.T) {
-	processor := new(JsonEncoder)
+	decoder := NewJSONDecoder()
 	for _, d := range testSuiteInvalid {
-		_, err := processor.DecodeMessage([]byte(d))
+		_, err := decoder.DecodeMessage([]byte(d))
 		if err == nil {
 			t.Fail()
 		}
@@ -87,13 +85,14 @@ func TestDecodeInvalid(t *testing.T) {
 }
 
 func TestEncodeValid(t *testing.T) {
-	processor := new(JsonEncoder)
+	encoder := NewJSONEncoder()
+	decoder := NewJSONDecoder()
 	for _, d := range testSuiteValid {
-		m, err := processor.DecodeMessage([]byte(d))
+		m, err := decoder.DecodeMessage([]byte(d))
 		if err != nil {
 			t.Errorf("Failed to decode: %v", err)
 		}
-		_, err = processor.EncodeMessage(&m)
+		_, err = encoder.EncodeMessage(&m)
 		if err != nil {
 			t.Errorf("%v", err)
 		}

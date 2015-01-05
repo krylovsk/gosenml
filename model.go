@@ -3,9 +3,9 @@ package gosenml
 import "fmt"
 
 // Data model as described in
-// http://tools.ietf.org/html/draft-jennings-senml-10
+// http://www.ietf.org/id/draft-jennings-core-senml-00.txt
 
-// Root variable
+// Message is the root SenML variable
 type Message struct {
 	BaseName  string  `json:"bn,omitempty"`
 	BaseTime  int64   `json:"bt,omitempty"`
@@ -14,18 +14,19 @@ type Message struct {
 	Entries   []Entry `json:"e"`
 }
 
-// Measurement of Parameter Entry
+// Entry is a measurement of Parameter Entry
 type Entry struct {
-	Name         string  `json:"n,omitempty"`
-	Units        string  `json:"u,omitempty"`
-	Value        float64 `json:"v"`
-	StringValue  string  `json:"sv"`
-	BooleanValue bool    `json:"bv"`
-	Sum          float64 `json:"s,omitempty"`
-	Time         int64   `json:"t,omitempty"`
-	UpdateTime   int64   `json:"ut,omitempty"`
+	Name         string   `json:"n,omitempty"`
+	Units        string   `json:"u,omitempty"`
+	Value        *float64 `json:"v,omitempty"`
+	StringValue  *string  `json:"sv,omitempty"`
+	BooleanValue *bool    `json:"bv,omitempty"`
+	Sum          *float64 `json:"s,omitempty"`
+	Time         int64    `json:"t,omitempty"`
+	UpdateTime   int64    `json:"ut,omitempty"`
 }
 
+// NewMessage creates a SenML message from a number of entries
 func NewMessage(entries ...Entry) *Message {
 	return &Message{
 		Version: 1.0,
@@ -34,26 +35,26 @@ func NewMessage(entries ...Entry) *Message {
 }
 
 // Makes a deep copy of the message
-func (self *Message) copy() Message {
-	mc := *self
-	entries := make([]Entry, len(self.Entries))
-	copy(entries, self.Entries)
+func (m *Message) copy() Message {
+	mc := *m
+	entries := make([]Entry, len(m.Entries))
+	copy(entries, m.Entries)
 	mc.Entries = entries
 	return mc
 }
 
-// Validates a message
-func (self *Message) Validate() error {
-	if len(self.Entries) == 0 {
+// Validate validates a message
+func (m *Message) Validate() error {
+	if len(m.Entries) == 0 {
 		return fmt.Errorf("Invalid Message: entries must be non-empty")
 	}
 	// TODO: more validation
 	return nil
 }
 
-// Returns a copy with all Enties expanded ("self-contained")
-func (self *Message) Expand() Message {
-	m := self.copy()
+// Expand returns a copy of the message with all Entries expanded ("self-contained")
+func (m *Message) Expand() Message {
+	m2 := m.copy()
 
 	for i, e := range m.Entries {
 		// BaseName
@@ -66,27 +67,32 @@ func (self *Message) Expand() Message {
 		if e.Units == "" {
 			e.Units = m.BaseUnits
 		}
-		m.Entries[i] = e
+		m2.Entries[i] = e
 	}
-	m.BaseName = ""
-	m.BaseTime = 0
-	m.BaseUnits = ""
-	return m
+	m2.BaseName = ""
+	m2.BaseTime = 0
+	m2.BaseUnits = ""
+	return m2
 }
 
-// Returns a copy with all Entries compacted (common data put into Message)
-func (self *Message) Compact() Message {
-	m := self.copy()
+// Compact returns a copy of the message with all Entries compacted (common data put into Message)
+func (m *Message) Compact() Message {
+	m2 := m.copy()
 	// TODO
 	// BaseName
 	// BaseTime
 	// BaseUnits
-	return m
+	return m2
 }
 
-type SenmlEncoder interface {
+// Encoder interface
+type Encoder interface {
 	EncodeMessage(*Message) ([]byte, error)
-	DecodeMessage([]byte) (Message, error)
 	EncodeEntry(*Entry) ([]byte, error)
+}
+
+// Decoder interface
+type Decoder interface {
 	DecodeEntry([]byte) (Entry, error)
+	DecodeMessage([]byte) (Message, error)
 }
