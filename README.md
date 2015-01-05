@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	"gosenml"
+	"github.com/krylovsk/gosenml"
 )
 
 func main() {
